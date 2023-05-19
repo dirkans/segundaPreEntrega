@@ -12,6 +12,7 @@ cartsRouter.get('/products_index', async (req, res) => {
     });
 });
 */
+
 cartsRouter.get('/carts', async (req, res) => {
     try {
         const carts = await manager.getCarts();
@@ -20,6 +21,12 @@ cartsRouter.get('/carts', async (req, res) => {
         res.status(500).send({ status: 'ERR', error: err });
     }
 });
+
+
+
+
+
+
 
 cartsRouter.post('/carts', async (req, res) => {
     try {

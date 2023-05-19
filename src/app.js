@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { engine } from 'express-handlebars';
 import { __dirname } from './utils.js';
 import productsRouter from './api/products/products.routes.js'
+import cartsRouter from './api/carts/carts.routes.js'
 
 const PORT = parseInt(process.env.PORT) || 3000;
 const MONGOOSE_URL = process.env.MONGOOSE_URL;
@@ -17,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Endpoints API REST
 app.use('/api', productsRouter);
-
+app.use('/api', cartsRouter);
 
 // Contenidos estáticos
 app.use('/public', express.static(`${__dirname}/public`));
@@ -29,7 +30,7 @@ app.set('views', `${__dirname}/views`);
 
 // Activación del servidor
 try {
-    await mongoose.connect(MONGOOSE_URL);
+    await mongoose.connect(MONGOOSE_URL||3000);
     
     app.listen(PORT, () => {
         console.log(`Servidor iniciado en puerto ${PORT}`);

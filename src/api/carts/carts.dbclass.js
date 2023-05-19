@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import cartsModel from './carts.model.js';
+import productModel from '../products/products.model.js';
 
 class Carts {
     constructor() {
@@ -41,12 +42,12 @@ class Carts {
         }
     }
 
-    getProducts = async () => {
+    getCarts = async () => {
         try {
-            const products = await productModel.find();
+            const carts = await cartsModel.find();
             this.status = 1;
             this.statusMsg = 'Productos recuperados';
-            return products;
+            return carts;
         } catch (err) {
             this.status = -1;
             this.statusMsg = `getProducts: ${err}`;
@@ -93,4 +94,4 @@ class Carts {
     }
 }
 
-export default Products;
+export default Carts;

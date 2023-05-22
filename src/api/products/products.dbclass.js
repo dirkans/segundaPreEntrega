@@ -44,8 +44,6 @@ class Products {
             }
             
             const products = await productModel.paginate(queryModel,optionsModel)
-            
-            
             this.status = 1;
             this.statusMsg = 'Productos recuperados';
             return products;
@@ -54,6 +52,12 @@ class Products {
             this.statusMsg = `getProducts: ${err}`;
         }
     }
+
+
+
+
+
+    
 }
 
 export default Products;

@@ -5,6 +5,7 @@ import productModel from '../products/products.model.js';
 const collection = 'carts';
 
 const schema = new mongoose.Schema({
+
     products: {
         type:[
             {product:{
@@ -17,6 +18,9 @@ const schema = new mongoose.Schema({
     }
     
 });
+
+
+
 
 schema.plugin(mongoosePaginate);
 

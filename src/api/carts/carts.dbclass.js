@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import cartsModel from './carts.model.js';
 import productModel from '../products/products.model.js';
 
+
 class Carts {
     constructor() {
         this.status = 0;
@@ -59,7 +60,7 @@ class Carts {
             const product = productModel.findById(id);
             this.status = 1;
             return product;
-        } catch (err) {
+            } catch (err) {
             this.status = -1;
             this.statusMsg = `getProductById: ${err}`;
         }
@@ -82,14 +83,20 @@ class Carts {
         }
     }
 
-    deleteProduct = async (id) => {
+    deleteCartProduct = async (cid,pid) => {
         try {
-            const process = await productModel.deleteOne({ '_id': new mongoose.Types.ObjectId(id) });
-            this.status = 1;
-            process.deletedCount === 0 ? this.statusMsg = "El ID no existe": this.statusMsg = "Producto borrado";
+            const ObjectId=mongoose.Types.ObjectId;
+            //if(cartsModel.exists({_id:cid})) {
+            const toDelete = {product:pid}
+            const process = cartsModel.findByIdAndUpdate(
+                { _id: cid },
+                { $pull:{products:{$in:[toDelete]}}}
+           )
+            this.status = 1
+            return process
         } catch (err) {
             this.status = -1;
-            this.statusMsg = `deleteProduct: ${err}`;
+            this.statusMsg = `emptyCart: ${err}`;
         }
     }
 }

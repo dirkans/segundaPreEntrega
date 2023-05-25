@@ -70,8 +70,8 @@ class Carts {
         try {
             const process = cartsModel.updateMany(
                 {},
-                {$set:{'qty.$[elem].qty':100}},
-                {arrayFilters:[{"elem.product":{$match:'0290012410000003943611'}}]}
+                {$set:{'products.$[elem].qty':100}},
+                {arrayFilters:[{"elem.product":{$match:'6464408e254b4ad7f3ac82c3'}}]}
 
             )
         

@@ -27,45 +27,10 @@ class Carts {
         return this.statusMsg;
     }
 
-    addProduct = async (product) => {
-        try {
-            if (!Products.#objEmpty(product) && Products.#verifyRequiredFields(product)) {
-                await productModel.create(product);
-                this.status = 1;
-                this.statusMsg = "Producto registrado en bbdd";
-            } else {
-                this.status = -1;
-                this.statusMsg = `Faltan campos obligatorios (${Products.requiredFields.join(', ')})`;
-            }
-        } catch (err) {
-            this.status = -1;
-            this.statusMsg = `AddProduct: ${err}`;
-        }
-    }
 
-    getCarts = async () => {
-        try {
-            const carts = await cartsModel.find();
-            this.status = 1;
-            this.statusMsg = 'Productos recuperados';
-            return carts;
-        } catch (err) {
-            this.status = -1;
-            this.statusMsg = `getProducts: ${err}`;
-        }
-    }
+    
 
-    getProductById = async (id) => {
-        try {
-            const product = productModel.findById(id);
-            this.status = 1;
-            return product;
-            } catch (err) {
-            this.status = -1;
-            this.statusMsg = `getProductById: ${err}`;
-        }
-    }
-
+  /*
     updateProduct = async (id, data) => {
         try {
             if (data === undefined || Object.keys(data).length === 0) {
@@ -82,6 +47,56 @@ class Carts {
             this.statusMsg = `updateProduct: ${err}`;
         }
     }
+    */
+    
+
+    emptyCart = async (cid)=>{
+        try{
+            const process = cartsModel.updateOne(
+                { _id: cid },
+                { $pullAll:{products:[]}}
+           )
+            this.
+            this.status = 1
+        }catch (err){
+            return false
+        }
+    }
+
+
+
+    
+    updateCart = async (cid,data) => {
+        try {
+            const process = cartsModel.updateMany(
+                {},
+                {$set:{'qty.$[elem].qty':100}},
+                {arrayFilters:[{"elem.product":{$match:'0290012410000003943611'}}]}
+
+            )
+        
+        } catch (err) {
+            console.log("Se ejecuto 3")
+            this.status = -1;
+            this.statusMsg = `deletedProds: ${err}`;
+        }
+    }
+    
+
+
+    
+    //METODOS TERMINADOS Y FUNCIONANDO OK VAN QUEDANDO ACA ABAJO
+    getCarts = async () => {
+        try {
+            const carts = await cartsModel.find();
+            this.status = 1;
+            this.statusMsg = 'Productos recuperados';
+            return carts;
+        } catch (err) {
+            this.status = -1;
+            this.statusMsg = `getProducts: ${err}`;
+        }
+    }
 
     deleteCartProduct = async (cid,pid) => {
         try {
@@ -96,9 +111,24 @@ class Carts {
             return process
         } catch (err) {
             this.status = -1;
-            this.statusMsg = `emptyCart: ${err}`;
+            this.statusMsg = `deletedProds: ${err}`;
         }
     }
+
+
+
+getProductsFromCart = async (cid) => {
+    try{
+    return await cartsModel.findById(cid).populate('products.product')
+    } catch(err){
+        return false
+    }
+}
+
+
+
+
+
 }
 
 export default Carts;

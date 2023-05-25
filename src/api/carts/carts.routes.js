@@ -22,6 +22,15 @@ cartsRouter.get('/carts', async (req, res) => {
     }
 });
 
+cartsRouter.get('/carts/:cid',async (req,res)=>{
+    try{
+        const carts = await manager.getProductsFromCart(req.params.cid);
+        res.status(200).send(carts)
+    } catch (err){
+        res.status(500).send({status:'err'})
+    }
+
+})
 
 
 
@@ -40,20 +49,6 @@ cartsRouter.post('/carts', async (req, res) => {
     }
 });
 */
-
-cartsRouter.put('/carts/:id', async (req, res) => {
-    try {
-        await manager.updateProduct(req.params.id, req.body);
-    
-        if (manager.checkStatus() === 1) {
-            res.status(200).send({ status: 'OK', msg: manager.showStatusMsg() });
-        } else {
-            res.status(400).send({ status: 'ERR', error: manager.showStatusMsg() });
-        }
-    } catch (err) {
-        res.status(500).send({ status: 'ERR', error: err });
-    }
-});
 
 cartsRouter.delete('/carts/:cid', async(req, res) => {
     try {
@@ -81,5 +76,20 @@ cartsRouter.delete('/carts/:cid/:pid', async(req, res) => {
         res.status(500).send({ status: 'ERR', error: err });
     }
 });
+
+
+cartsRouter.put('/carts/:cid', async(req,res)=>{
+    try{
+        const updateCart = await manager.updateCart(req.params.cid,req.body)
+        res.status(200).send({status:'OK',msg:'Carrito actualizado correctamente'})
+
+
+    } catch (err){
+        res.status(500).send({status:'ERR',error:err})
+    }
+})
+
+
+
 
 export default cartsRouter;

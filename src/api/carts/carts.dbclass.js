@@ -3,6 +3,7 @@ import cartsModel from './carts.model.js';
 import productModel from '../products/products.model.js';
 
 
+
 class Carts {
     constructor() {
         this.status = 0;
@@ -50,62 +51,92 @@ class Carts {
     */
     
 
-    emptyCart = async (cid)=>{
-        try{
-            const process = cartsModel.updateOne(
-                { _id: cid },
-                { $pullAll:{products:[]}}
-           )
-            this.
-            this.status = 1
-        }catch (err){
-            return false
-        }
-    }
 
 
 
     
     updateCart = async (cid,data) => {
-        try {
-            const process = cartsModel.updateMany(
-                {},
-                {$set:{'products.$[elem].qty':100}},
-                {arrayFilters:[{"elem.product":{$match:'6464408e254b4ad7f3ac82c3'}}]}
+            const productId = data[0].product
+            const newQty = data[0].qty;
+            console.log(productId,newQty)
+            
+            const process = cartsModel.findOneAndUpdate
+            (
+            {_id: new mongoose.Types.ObjectId(cid)},
+            { $set: {   "products.$[elem].qty":newQty               }},
+            {returnNewDocument:true, arrayFilters: [{"elem.product":productId}]}
+    )
+return process
+}
 
-            )
-        
-        } catch (err) {
-            console.log("Se ejecuto 3")
-            this.status = -1;
-            this.statusMsg = `deletedProds: ${err}`;
-        }
-    }
+updateProductQty = async (cid,pid,data) => {
     
+    
+    const newQty = data[0].qty;
+    mongoose.set('debug',true)
+    const process = cartsModel.findOneAndUpdate
+     (
+     {_id: new mongoose.Types.ObjectId(cid)},
+     { $set: {   "products.$[elem].qty":newQty               }},
+     {new:true, arrayFilters: [{"elem.ref":pid}]}
+ )
+return process
+}
+
+getCarts = async () => {
+    try {
+        const carts = await cartsModel.find().populate('products.product');
+        this.status = 1;
+        this.statusMsg = 'Productos recuperados';
+        return carts;
+    } catch (err) {
+        this.status = -1;
+        this.statusMsg = `getProducts: ${err}`;
+    }
+}
+
+
+
+
+getProductsFromCart = async (cid) => {
+try{
+return await cartsModel.findById(cid).populate('products.product')
+} catch(err){
+    return false
+}
+}
+
+
+emptyCart = async (cid)=>{
+    try{
+        
+        const process = cartsModel.findOneAndUpdate
+        (
+        {_id: new mongoose.Types.ObjectId(cid)},
+        { $set: {products:[]}}
+        
+        )
+
+
+        this.status = 1
+    }catch (err){
+        return false
+    }
+}
 
 
     
     //METODOS TERMINADOS Y FUNCIONANDO OK VAN QUEDANDO ACA ABAJO
-    getCarts = async () => {
-        try {
-            const carts = await cartsModel.find();
-            this.status = 1;
-            this.statusMsg = 'Productos recuperados';
-            return carts;
-        } catch (err) {
-            this.status = -1;
-            this.statusMsg = `getProducts: ${err}`;
-        }
-    }
-
     deleteCartProduct = async (cid,pid) => {
         try {
             const ObjectId=mongoose.Types.ObjectId;
-            //if(cartsModel.exists({_id:cid})) {
-            const toDelete = {product:pid}
+            const cartId = new mongoose.Types.ObjectId(cid)
+            const prodId = new mongoose.Types.ObjectId(pid)
+            const toDelete = {ref:pid}
             const process = cartsModel.findByIdAndUpdate(
-                { _id: cid },
-                { $pull:{products:{$in:[toDelete]}}}
+                { _id: cartId },
+                { $pull:{products:{$in:[{product:pid}]}}}
+                
            )
             this.status = 1
             return process
@@ -114,19 +145,7 @@ class Carts {
             this.statusMsg = `deletedProds: ${err}`;
         }
     }
-
-
-
-getProductsFromCart = async (cid) => {
-    try{
-    return await cartsModel.findById(cid).populate('products.product')
-    } catch(err){
-        return false
-    }
-}
-
-
-
+    
 
 
 }

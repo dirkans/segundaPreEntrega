@@ -64,7 +64,39 @@ cartsRouter.delete('/carts/:cid', async(req, res) => {
     }
 });
 
-cartsRouter.delete('/carts/:cid/:pid', async(req, res) => {
+
+
+cartsRouter.put('/carts/:cid', async(req,res)=>{
+    try{
+        const updateCart = await manager.updateCart(req.params.cid,req.body)
+        res.status(200).send(updateCart)
+
+
+    } catch (err){
+        res.status(500).send({status:'ERR',error:err})
+    }
+})
+
+
+cartsRouter.put('/carts/:cid/products/:pid', async(req,res)=>{
+    try{
+        const updateProductQty = await manager.updateProductQty(req.params.cid,req.params.pid,req.body)
+        res.status(200).send(updateProductQty)
+
+
+    } catch (err){
+        res.status(500).send({status:'ERR',error:err})
+    }
+})
+
+
+
+
+
+
+////// RUTAS FUNCIONALES VAN QUEDANDO ACA ABAJO
+
+cartsRouter.delete('/carts/:cid/products/:pid', async(req, res) => {
     try {
         const deleteProd = await manager.deleteCartProduct(req.params.cid,req.params.pid);
         if (manager.checkStatus() === 1) {
@@ -76,20 +108,5 @@ cartsRouter.delete('/carts/:cid/:pid', async(req, res) => {
         res.status(500).send({ status: 'ERR', error: err });
     }
 });
-
-
-cartsRouter.put('/carts/:cid', async(req,res)=>{
-    try{
-        const updateCart = await manager.updateCart(req.params.cid,req.body)
-        res.status(200).send({status:'OK',msg:'Carrito actualizado correctamente'})
-
-
-    } catch (err){
-        res.status(500).send({status:'ERR',error:err})
-    }
-})
-
-
-
 
 export default cartsRouter;
